@@ -24,6 +24,8 @@ public class Main {
 	public static SQL sql;
 	public static ServerManager serverManager;
 
+	public static File serverdir;
+
 	public static void main(String[] args) {
 		loadConfig();
 		sql = new SQL();
@@ -57,6 +59,7 @@ public class Main {
 				writer.write("database_pass=MCP\n");
 				writer.write("pass=" + UUID.randomUUID().toString().replace("-", "") + "\n");
 				writer.write("port=35456\n");
+				writer.write("serverdir=35456\n");
 				writer.close();
 			}
 			Properties p = new Properties();
@@ -66,6 +69,7 @@ public class Main {
 			daemonPass = p.getProperty("pass");
 			databaseUser = p.getProperty("database_user");
 			databasePass = p.getProperty("database_pass");
+			serverdir = new File(p.getProperty("serverdir"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

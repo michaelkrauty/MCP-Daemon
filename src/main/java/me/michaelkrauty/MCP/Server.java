@@ -15,7 +15,7 @@ public class Server {
 	private final static Logger log = Logger.getLogger("MCP");
 
 	private int id;
-	private String serverdir;
+	private File serverdir;
 	private String host;
 	private int port;
 	private int memory;
@@ -36,7 +36,7 @@ public class Server {
 		outputstream = null;
 		starttime = -1;
 		jar = getDBJarName();
-		serverdir = "/home/michael/Desktop/tmp/servers/" + id;
+		serverdir = new File(Main.serverdir, Integer.toString(id));
 		/*
 		startupCommand = getDBStartupCommand()
 				.replace("%JARPATH", getDBJarLocation())
@@ -51,22 +51,19 @@ public class Server {
 		log.info("Server startup command: " + startupCommand);
 		if (!isRunning()) {
 			try {
+				File sdir = serverdir;
+				if (!sdir.exists())
+					Runtime.getRuntime().exec(new String[] {"sudo", "-u", "s" + id, "mkdir", sdir.getAbsolutePath()});
 				ProcessBuilder pb = new ProcessBuilder();
-				pb.directory(new File(serverdir));
+				pb.directory(serverdir);
 				pb.command("sudo", "-u", "s" + id, "java", "-jar", "/home/michael/Desktop/tmp/jar/" + jar);
 				Process p = pb.start();
 				process = p;
 				inputstream = p.getInputStream();
 				outputstream = p.getOutputStream();
 				starttime = System.currentTimeMillis();
-			} catch (IOException e) {
-				log.info(e.getMessage());
-				log.info("Attempting to create the server directory & restart...");
-				File sdir = new File(serverdir);
-				sdir.mkdir();
-				start();
-			} catch (NullPointerException e) {
-				log.info("Server doesn't exist in SQL database.");
+				new ServerOutputToConsole(inputstream, id);
+				log.info("Server " + id + " started.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

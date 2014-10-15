@@ -30,7 +30,7 @@ public class ConnectionHandler implements Runnable {
 			try {
 				log.info("Waiting for connections...");
 				clientSocket = serverSocket.accept();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.log(Level.SEVERE, "Couldn't accept client connection!");
 				log.log(Level.SEVERE, e.getMessage());
 			}

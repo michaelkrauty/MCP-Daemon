@@ -1,6 +1,8 @@
 package me.michaelkrauty.MCP;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by michael on 10/14/14.
@@ -44,5 +46,20 @@ public class ServerManager {
 			return true;
 		}
 		return false;
+	}
+
+	public String createServer(int serverid) {
+		File serverdir = new File(Main.serverdir, Integer.toString(serverid));
+		if (!serverdir.exists()) {
+			try {
+				String password = UUID.randomUUID().toString().replace("-", "");
+				Runtime.getRuntime().exec(new String[] {"sudo", "useradd", "s" + serverid, "-p", password, "-d", serverdir.getAbsolutePath(), "-m"});
+				return password;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
 	}
 }

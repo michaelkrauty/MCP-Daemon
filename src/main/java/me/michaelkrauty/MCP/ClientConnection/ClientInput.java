@@ -51,8 +51,7 @@ class ClientInput implements Runnable {
 			if (json.get("command") != null) command = json.get("command").getAsString();
 
 			if (auth.equals(Main.daemonPass)) {
-				// TODO: handle input now that request is authenticated, then output results
-				out.print(true);
+				out.print(handleInput(action, command, serverid));
 			} else {
 				out.print(false);
 			}
@@ -66,4 +65,24 @@ class ClientInput implements Runnable {
 		}
 	}
 
+	private boolean handleInput(String action, String command, int serverid) {
+		if (serverid > 0) {
+			if (action.equalsIgnoreCase("start")) {
+				Main.serverManager.startServer(serverid);
+			} else if (action.equalsIgnoreCase("stop")) {
+				Main.serverManager.stopServer(serverid);
+				return true;
+			} else if (action.equalsIgnoreCase("kill")) {
+				Main.serverManager.getServer(serverid).forceStop();
+				return true;
+			} else if (action.equalsIgnoreCase("command")) {
+				Main.serverManager.getServer(serverid).executeCommand(command);
+				return true;
+			} else if (action.equalsIgnoreCase("createserver")) {
+				log.info(Main.serverManager.createServer(serverid));
+				return true;
+			}
+		}
+		return false;
+	}
 }
