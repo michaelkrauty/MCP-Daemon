@@ -3,8 +3,7 @@ package me.michaelkrauty.MCP.ClientConnection;
 import me.michaelkrauty.MCP.Main;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,25 +15,26 @@ public class ConnectionHandler implements Runnable {
 
 	public ConnectionHandler() {
 		try {
-			serverSocket = new ServerSocket(Main.daemonPort);
-			log.info("Server socket created on port " + Main.daemonPort + ".");
+			serverSocket = new ServerSocket();
+			serverSocket.bind(new InetSocketAddress(Main.daemonIP, Main.daemonPort));
+			log.info("Daemon listening on " + serverSocket.getInetAddress().getHostAddress() + ":" + serverSocket.getLocalPort());
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "Couldn't bind to port " + Main.daemonPort + "!");
+			log.log(Level.SEVERE, "Couldn't bind to " + Main.daemonIP + ":" + Main.daemonPort + "!");
 			log.log(Level.SEVERE, e.getMessage());
 		}
 	}
 
 	public void run() {
+		log.info("Daemon ready to accept connections");
 		while (Main.running) {
 			Socket clientSocket = null;
 			try {
-				log.info("Waiting for connections...");
 				clientSocket = serverSocket.accept();
 			} catch (Exception e) {
 				log.log(Level.SEVERE, "Couldn't accept client connection!");
 				log.log(Level.SEVERE, e.getMessage());
 			}
-			new ClientConnection(clientSocket);
+			new ClientConnection(clientSocket).start();
 		}
 	}
 

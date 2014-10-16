@@ -2,6 +2,7 @@ package me.michaelkrauty.MCP;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,18 +49,26 @@ public class ServerManager {
 		return false;
 	}
 
-	public String createServer(int serverid) {
+	public boolean createServer(int serverid, String password) {
 		File serverdir = new File(Main.serverdir, Integer.toString(serverid));
 		if (!serverdir.exists()) {
 			try {
-				String password = UUID.randomUUID().toString().replace("-", "");
 				Runtime.getRuntime().exec(new String[] {"sudo", "useradd", "s" + serverid, "-p", password, "-d", serverdir.getAbsolutePath(), "-m"});
-				return password;
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
+				return false;
 			}
 		}
-		return null;
+		return false;
+	}
+
+	public List<Integer> listOnlineServers() {
+		List<Integer> online = new ArrayList<Integer>();
+		for (Server server : servers) {
+			if (server.isRunning())
+				online.add(server.getID());
+		}
+		return online;
 	}
 }

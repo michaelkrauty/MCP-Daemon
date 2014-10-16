@@ -15,6 +15,7 @@ public class Main {
 	public static boolean running;
 	private static Logger log = Logger.getLogger("MCP");
 
+	public static String daemonIP;
 	public static int daemonPort;
 	public static String daemonPass;
 	public static String databaseURL;
@@ -25,9 +26,11 @@ public class Main {
 	public static ServerManager serverManager;
 
 	public static File serverdir;
+	public static File jardir;
 
 	public static void main(String[] args) {
 		loadConfig();
+		checkDirectories();
 		sql = new SQL();
 		serverManager = new ServerManager();
 		new ConnectionHandler().start();
@@ -58,20 +61,39 @@ public class Main {
 				writer.write("database_user=MCP\n");
 				writer.write("database_pass=MCP\n");
 				writer.write("pass=" + UUID.randomUUID().toString().replace("-", "") + "\n");
+				writer.write("ip=0.0.0.0\n");
 				writer.write("port=35456\n");
-				writer.write("serverdir=35456\n");
+				writer.write("serverdir=servers\n");
+				writer.write("jardir=jar\n");
 				writer.close();
 			}
 			Properties p = new Properties();
 			p.load(new InputStreamReader(new FileInputStream(new File("daemon.conf"))));
 			databaseURL = p.getProperty("database");
+			daemonIP = p.getProperty("ip");
 			daemonPort = Integer.parseInt(p.getProperty("port"));
 			daemonPass = p.getProperty("pass");
 			databaseUser = p.getProperty("database_user");
 			databasePass = p.getProperty("database_pass");
 			serverdir = new File(p.getProperty("serverdir"));
+			jardir = new File(p.getProperty("jardir"));
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static void checkDirectories() {
+		if (!serverdir.exists()) {
+			serverdir.mkdir();
+			serverdir.setReadable(true, false);
+			serverdir.setWritable(true, false);
+			serverdir.setExecutable(true, false);
+		}
+		if (!jardir.exists()) {
+			jardir.mkdir();
+			jardir.setReadable(true, false);
+			jardir.setWritable(false, false);
+			jardir.setExecutable(true, false);
 		}
 	}
 }

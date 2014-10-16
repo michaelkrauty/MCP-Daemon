@@ -4,6 +4,8 @@ import javax.net.SocketFactory;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,13 +49,17 @@ public class Server {
 	}
 
 	public void start() {
-		log.info("Starting server...");
+		log.info("Starting server " + id);
 		log.info("Server startup command: " + startupCommand);
 		if (!isRunning()) {
 			try {
-				File sdir = serverdir;
-				if (!sdir.exists())
-					Runtime.getRuntime().exec(new String[] {"sudo", "-u", "s" + id, "mkdir", sdir.getAbsolutePath()});
+				if (!serverdir.exists()) {
+					Process asdf = Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "mkdir", serverdir.getAbsolutePath()});
+					String line;
+					while ((line = new BufferedReader(new InputStreamReader(asdf.getInputStream())).readLine()) != null) {
+						log.info(line);
+					}
+				}
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(serverdir);
 				pb.command("sudo", "-u", "s" + id, "java", "-jar", "/home/michael/Desktop/tmp/jar/" + jar);
@@ -62,7 +68,7 @@ public class Server {
 				inputstream = p.getInputStream();
 				outputstream = p.getOutputStream();
 				starttime = System.currentTimeMillis();
-				new ServerOutputToConsole(inputstream, id);
+				new ServerOutput(inputstream, id);
 				log.info("Server " + id + " started.");
 			} catch (Exception e) {
 				e.printStackTrace();
