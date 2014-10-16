@@ -16,13 +16,13 @@ import java.util.logging.Logger;
 
 class ClientConnection implements Runnable {
 
-	private final static Logger log = Logger.getLogger("MCP");
+	private final static PrintStream out = System.out;
 
 	private Thread t;
 	private final Socket socket;
 
 	public ClientConnection(Socket soc) {
-		log.info("Connection from " + soc.getRemoteSocketAddress().toString());
+		out.println("Connection from " + soc.getRemoteSocketAddress().toString());
 		socket = soc;
 	}
 
@@ -38,10 +38,10 @@ class ClientConnection implements Runnable {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			String input = in.readLine();
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			JsonObject json = new Gson().fromJson(input, JsonElement.class).getAsJsonObject();
 
-			log.info(socket.getRemoteSocketAddress().toString() + ": " + input);
+			out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
 
 			String auth = "";
 			int serverid = -1;
@@ -58,19 +58,19 @@ class ClientConnection implements Runnable {
 						BufferedReader console = new BufferedReader(new InputStreamReader(Main.serverManager.getServer(serverid).getInputStream()));
 						String line;
 						while ((line = console.readLine()) != null) {
-							out.print(new Gson().toJson(line));
+							output.print(new Gson().toJson(line));
 						}
 					}
 				} else
-					out.print(handleInput(action, command, serverid));
+					output.print(handleInput(action, command, serverid));
 			} else {
-				out.print("Incorrect pass");
+				output.print("Incorrect pass");
 			}
-			out.close();
+			output.close();
 			in.close();
 
 		} catch (IOException e) {
-			log.log(Level.SEVERE, socket.getRemoteSocketAddress().toString()
+			out.println(socket.getRemoteSocketAddress().toString()
 					+ " disconnected: " + e.getMessage());
 		}
 	}

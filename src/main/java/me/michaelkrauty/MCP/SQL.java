@@ -1,5 +1,6 @@
 package me.michaelkrauty.MCP;
 
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,7 +11,7 @@ import java.util.logging.Logger;
 
 public class SQL {
 
-	private final static Logger log = Logger.getLogger("MCP");
+	private final static PrintStream out = System.out;
 
 	private static Connection connection;
 
@@ -22,7 +23,7 @@ public class SQL {
 		try {
 			connection = DriverManager.getConnection(Main.databaseURL, Main.databaseUser, Main.databasePass);
 		} catch (Exception e) {
-			log.log(Level.SEVERE, "Couldn't connect to database! Reason: " + e.getMessage());
+			out.println("Couldn't connect to database! Reason: " + e.getMessage());
 		}
 	}
 
@@ -229,27 +230,6 @@ public class SQL {
 			e.printStackTrace();
 			return false;
 		}
-	}
-
-	public static ArrayList<String> getAllServers() {
-		try {
-			openConnection();
-			PreparedStatement sql = connection
-					.prepareStatement("SELECT `id` FROM `servers`;");
-			ResultSet result = sql.executeQuery();
-			result.last();
-			int items = result.getRow();
-			result.first();
-			ArrayList<String> ids = new ArrayList<String>();
-			for (int i = 0; i < items; i++) {
-				ids.add(result.getString(1));
-				result.next();
-			}
-			return ids;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public static int getUserIdByEmail(String email) {

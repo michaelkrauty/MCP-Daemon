@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class Server {
 
-	private final static Logger log = Logger.getLogger("MCP");
+	private final static PrintStream out = System.out;
 
 	private int id;
 	private File serverdir;
@@ -49,32 +49,32 @@ public class Server {
 	}
 
 	public void start() {
-		log.info("Starting server " + id);
-		log.info("Server startup command: " + startupCommand);
+		out.println("Starting server " + id);
+		out.println("Server startup command: " + startupCommand);
 		if (!isRunning()) {
 			try {
 				if (!serverdir.exists()) {
 					Process asdf = Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "mkdir", serverdir.getAbsolutePath()});
 					String line;
 					while ((line = new BufferedReader(new InputStreamReader(asdf.getInputStream())).readLine()) != null) {
-						log.info(line);
+						out.println(line);
 					}
 				}
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(serverdir);
-				pb.command("sudo", "-u", "s" + id, "java", "-jar", "/home/michael/Desktop/tmp/jar/" + jar);
+				pb.command("sudo", "-u", "s" + id, "java", "-jar", new File(Main.jardir, "server.jar").getAbsolutePath());
 				Process p = pb.start();
 				process = p;
 				inputstream = p.getInputStream();
 				outputstream = p.getOutputStream();
 				starttime = System.currentTimeMillis();
 				new ServerOutput(inputstream, id);
-				log.info("Server " + id + " started.");
+				out.println("Server " + id + " started.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
-			log.info("Server is already online!");
+			out.println("Server is already online!");
 		}
 	}
 
@@ -111,11 +111,11 @@ public class Server {
 					open = false;
 				}
 			} catch (Exception e) {
-				log.log(Level.SEVERE, "Error creating socket");
+				out.println("Error creating socket");
 				open = false;
 			}
 		} else {
-			log.info("Server doesn't exist!");
+			out.println("Server doesn't exist!");
 			open = false;
 		}
 		return open;

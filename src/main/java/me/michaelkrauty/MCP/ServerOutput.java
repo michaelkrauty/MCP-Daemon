@@ -3,6 +3,7 @@ package me.michaelkrauty.MCP;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class ServerOutput implements Runnable {
 
 	private InputStream inputStream;
 	private int serverid;
-	private Logger log = Logger.getLogger("MCP");
+	private PrintStream out = System.out;
 	private Thread t;
 
 	public ServerOutput(InputStream inputStream, int serverid) {
@@ -32,7 +33,7 @@ public class ServerOutput implements Runnable {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
 			while ((line = reader.readLine()) != null) {
-				log.info("Server " + serverid + ": " + line);
+				out.println("Server " + serverid + ": " + line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

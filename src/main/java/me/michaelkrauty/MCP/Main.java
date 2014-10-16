@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class Main {
 
 	public static boolean running;
-	private static Logger log = Logger.getLogger("MCP");
+	private static PrintStream out = System.out;
 
 	public static String daemonIP;
 	public static int daemonPort;
@@ -45,7 +45,7 @@ public class Main {
 				Thread.sleep(100);
 			}
 			sql.closeConnection();
-			log.info("Program exit.");
+			out.println("Program exit.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
