@@ -16,7 +16,6 @@ class ClientConnection implements Runnable {
 	private final Socket socket;
 
 	public ClientConnection(Socket soc) {
-		out.println("Connection from " + soc.getRemoteSocketAddress().toString());
 		socket = soc;
 	}
 
@@ -33,6 +32,9 @@ class ClientConnection implements Runnable {
 					socket.getInputStream()));
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			String input = in.readLine();
+
+			out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
+
 			if (input == null) {
 				output.write(new Gson().toJson(false));
 				output.close();
@@ -40,8 +42,6 @@ class ClientConnection implements Runnable {
 				return;
 			}
 			JsonObject json = new Gson().fromJson(input, JsonElement.class).getAsJsonObject();
-
-			out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
 
 			String auth = "";
 			int serverid = -1;

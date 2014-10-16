@@ -47,8 +47,7 @@ public class Server {
 	}
 
 	public void start() {
-		out.println("Starting server " + id);
-		out.println("Server startup command: " + startupCommand);
+		out.println("Starting server " + id + " (startup command: " + startupCommand + ")");
 		if (!isRunning()) {
 			try {
 				if (!serverdir.exists()) {
@@ -79,7 +78,7 @@ public class Server {
 				e.printStackTrace();
 			}
 		} else {
-			out.println("Server is already online!");
+			out.println("Server " + id + " is already online!");
 		}
 	}
 

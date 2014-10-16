@@ -40,8 +40,8 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	public void start() {
-		out.println("Starting Connection Handler");
 		if (t == null) {
+			out.println("Starting Connection Handler");
 			t = new Thread(this);
 			t.start();
 		}

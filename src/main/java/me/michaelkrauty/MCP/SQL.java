@@ -1,6 +1,5 @@
 package me.michaelkrauty.MCP;
 
-import java.io.File;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -58,28 +57,6 @@ public class SQL {
 			openConnection();
 			PreparedStatement sql = connection.prepareStatement("SELECT * FROM `servers` WHERE id=?;");
 			sql.setInt(1, serverid);
-			return sql.executeQuery().next();
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	public static boolean userDataContainsEmail(String email) {
-		try {
-			openConnection();
-			PreparedStatement sql = connection.prepareStatement("SELECT * FROM `users` WHERE email=?;");
-			sql.setString(1, email);
-			return sql.executeQuery().next();
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	public static boolean userDataContainsId(int userid) {
-		try {
-			openConnection();
-			PreparedStatement sql = connection.prepareStatement("SELECT * FROM `users` WHERE id=?;");
-			sql.setInt(1, userid);
 			return sql.executeQuery().next();
 		} catch (Exception e) {
 			return false;
@@ -230,25 +207,6 @@ public class SQL {
 		}
 	}
 
-	public static String getServerMod(int serverid) {
-		try {
-			if (serverDataContainsServer(serverid)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `jars` WHERE id=?;");
-				sql.setInt(1, getServerJarId(serverid));
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getString("mod");
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public static String getJarStarupCommand(int jarid) {
 		try {
 			openConnection();
@@ -276,21 +234,6 @@ public class SQL {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;
-		}
-	}
-
-	public static String getJarLocation(int jarid) {
-		try {
-			openConnection();
-			PreparedStatement sql = connection
-					.prepareStatement("SELECT * FROM `jars` WHERE id=?;");
-			sql.setInt(1, jarid);
-			ResultSet result = sql.executeQuery();
-			result.next();
-			return new File(Main.jardir, result.getString("name")).getAbsolutePath();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
 		}
 	}
 }
