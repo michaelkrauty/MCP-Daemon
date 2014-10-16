@@ -37,8 +37,14 @@ class ClientConnection implements Runnable {
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
-			String input = in.readLine();
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+			String input = in.readLine();
+			if (input == null) {
+				output.write(new Gson().toJson(false));
+				output.close();
+				in.close();
+				return;
+			}
 			JsonObject json = new Gson().fromJson(input, JsonElement.class).getAsJsonObject();
 
 			out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
@@ -58,7 +64,7 @@ class ClientConnection implements Runnable {
 						BufferedReader console = new BufferedReader(new InputStreamReader(Main.serverManager.getServer(serverid).getInputStream()));
 						String line;
 						while ((line = console.readLine()) != null) {
-							output.print(new Gson().toJson(line));
+							output.print(new Gson().toJson(line) + "\n");
 						}
 					}
 				} else
