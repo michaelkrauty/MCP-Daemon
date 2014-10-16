@@ -66,17 +66,15 @@ public class Server {
 				cmd[1] = "-u";
 				cmd[2] = "s" + id;
 				for (int i = 0; i < sc.length; i++) {
-					cmd[i+3] = sc[i];
+					cmd[i + 3] = sc[i];
 				}
 				pb.command(cmd);
-				// pb.command("sudo", "-u", "s" + id, "java", "-jar", jarFile.getAbsolutePath());
 				Process p = pb.start();
 				process = p;
 				inputstream = p.getInputStream();
 				outputstream = p.getOutputStream();
 				starttime = System.currentTimeMillis();
 				new ServerOutput(inputstream, id);
-				out.println("Server " + id + " started.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

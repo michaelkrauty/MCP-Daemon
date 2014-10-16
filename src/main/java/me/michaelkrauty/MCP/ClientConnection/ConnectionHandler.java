@@ -4,9 +4,9 @@ import me.michaelkrauty.MCP.Main;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class ConnectionHandler implements Runnable {
 

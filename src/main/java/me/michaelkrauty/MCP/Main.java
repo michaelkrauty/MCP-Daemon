@@ -5,7 +5,6 @@ import me.michaelkrauty.MCP.ClientConnection.ConnectionHandler;
 import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Created by michael on 10/13/14.

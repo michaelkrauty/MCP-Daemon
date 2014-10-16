@@ -52,7 +52,7 @@ public class ServerManager {
 		File serverdir = new File(Main.serverdir, Integer.toString(serverid));
 		if (!serverdir.exists()) {
 			try {
-				Runtime.getRuntime().exec(new String[] {"sudo", "useradd", "s" + serverid, "-p", password, "-d", serverdir.getAbsolutePath(), "-m"});
+				Runtime.getRuntime().exec(new String[]{"sudo", "useradd", "s" + serverid, "-p", password, "-d", serverdir.getAbsolutePath(), "-m"});
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
