@@ -1,5 +1,6 @@
 package me.michaelkrauty.MCP;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -46,7 +47,7 @@ public class SQL {
 			res = false;
 		}
 		try {
-			PreparedStatement stmt = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `jars` (`id` int(11) PRIMARY KEY, `name` varchar(256), `mod` varchar(256), `version` varchar(256), `build` varchar(256), `startup_args` varchar(256));");
+			PreparedStatement stmt = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `jars` (`id` int(11) PRIMARY KEY, `name` varchar(256), `mod` varchar(256), `version` varchar(256), `build` varchar(256), `start_command` varchar(256));");
 			stmt.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -232,101 +233,6 @@ public class SQL {
 		}
 	}
 
-	public static int getUserIdByEmail(String email) {
-		try {
-			if (userDataContainsEmail(email)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `users` WHERE email=?;");
-				sql.setString(1, email);
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getInt("id");
-			} else {
-				return -1;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return -1;
-		}
-	}
-
-	public static String getUserEmail(int userid) {
-		try {
-			if (userDataContainsId(userid)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `users` WHERE id=?;");
-				sql.setInt(1, userid);
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getString("email");
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public static String getUserUsername(int userid) {
-		try {
-			if (userDataContainsId(userid)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `users` WHERE id=?;");
-				sql.setInt(1, userid);
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getString("userid");
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public static String getUserPassword(int userid) {
-		try {
-			if (userDataContainsId(userid)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `users` WHERE id=?;");
-				sql.setInt(1, userid);
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getString("password");
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public static String getUserDate_Registered(int userid) {
-		try {
-			if (userDataContainsId(userid)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `users` WHERE id=?;");
-				sql.setInt(1, userid);
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getString("date_registered");
-			} else {
-				return null;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public static String getServerMod(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -346,19 +252,45 @@ public class SQL {
 		}
 	}
 
-	public static String getServerStartupCommand(int serverid) {
+	public static String getJarStarupCommand(int jarid) {
 		try {
-			if (serverDataContainsServer(serverid)) {
-				openConnection();
-				PreparedStatement sql = connection
-						.prepareStatement("SELECT * FROM `jars` WHERE id=?;");
-				sql.setInt(1, getServerJarId(serverid));
-				ResultSet result = sql.executeQuery();
-				result.next();
-				return result.getString("startup_args");
-			} else {
-				return null;
-			}
+			openConnection();
+			PreparedStatement sql = connection
+					.prepareStatement("SELECT * FROM `jars` WHERE id=?;");
+			sql.setInt(1, jarid);
+			ResultSet result = sql.executeQuery();
+			result.next();
+			return result.getString("start_command");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static int getJarID(String jar) {
+		try {
+			openConnection();
+			PreparedStatement sql = connection
+					.prepareStatement("SELECT * FROM `jars` WHERE name=?;");
+			sql.setString(1, jar);
+			ResultSet result = sql.executeQuery();
+			result.next();
+			return result.getInt("id");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
+	public static String getJarLocation(int jarid) {
+		try {
+			openConnection();
+			PreparedStatement sql = connection
+					.prepareStatement("SELECT * FROM `jars` WHERE id=?;");
+			sql.setInt(1, jarid);
+			ResultSet result = sql.executeQuery();
+			result.next();
+			return new File(Main.jardir, result.getString("name")).getAbsolutePath();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

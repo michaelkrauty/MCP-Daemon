@@ -4,10 +4,6 @@ import javax.net.SocketFactory;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by michael on 10/13/14.
@@ -27,6 +23,8 @@ public class Server {
 	private long starttime;
 	private String startupCommand;
 	private String jar;
+	private int jarid;
+	private File jarFile;
 
 	public Server(int id) {
 		this.id = id;
@@ -38,14 +36,14 @@ public class Server {
 		outputstream = null;
 		starttime = -1;
 		jar = getDBJarName();
+		jarid = getDBJarID();
+		jarFile = new File(Main.jardir, jar);
 		serverdir = new File(Main.serverdir, Integer.toString(id));
-		/*
 		startupCommand = getDBStartupCommand()
-				.replace("%JARPATH", getDBJarLocation())
+				.replace("%JARPATH", jarFile.getAbsolutePath())
 				.replace("%MEMORY", Integer.toString(getDBMemory()))
-				.replace("%HOST", getDBHost())
+				.replace("%IP", getDBHost())
 				.replace("%PORT", Integer.toString(getDBPort()));
-				*/
 	}
 
 	public void start() {
@@ -62,7 +60,16 @@ public class Server {
 				}
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(serverdir);
-				pb.command("sudo", "-u", "s" + id, "java", "-jar", new File(Main.jardir, "server.jar").getAbsolutePath());
+				String[] sc = startupCommand.split(" ");
+				String[] cmd = new String[sc.length + 3];
+				cmd[0] = "sudo";
+				cmd[1] = "-u";
+				cmd[2] = "s" + id;
+				for (int i = 0; i < sc.length; i++) {
+					cmd[i+3] = sc[i];
+				}
+				pb.command(cmd);
+				// pb.command("sudo", "-u", "s" + id, "java", "-jar", jarFile.getAbsolutePath());
 				Process p = pb.start();
 				process = p;
 				inputstream = p.getInputStream();
@@ -155,5 +162,13 @@ public class Server {
 
 	public String getDBJarName() {
 		return Main.sql.getServerJarName(id);
+	}
+
+	public int getDBJarID() {
+		return Main.sql.getJarID(jar);
+	}
+
+	public String getDBStartupCommand() {
+		return Main.sql.getJarStarupCommand(jarid);
 	}
 }
