@@ -87,6 +87,8 @@ class ClientConnection implements Runnable {
 			} else if (action.equalsIgnoreCase("Kill")) {
 				Main.serverManager.getServer(serverid).forceStop();
 				return gson.toJson(true);
+			} else if (action.equalsIgnoreCase("GetUptime")) {
+				return gson.toJson(Main.serverManager.getServer(serverid).getUptime());
 			} else if (action.equalsIgnoreCase("Command")) {
 				if (!command.isEmpty())
 					return gson.toJson(Main.serverManager.getServer(serverid).executeCommand(command));

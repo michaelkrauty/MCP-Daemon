@@ -39,11 +39,7 @@ public class Server {
 		jarid = getDBJarID();
 		jarFile = new File(Main.jardir, jar);
 		serverdir = new File(Main.serverdir, Integer.toString(id));
-		startupCommand = getDBStartupCommand()
-				.replace("%JARPATH", jarFile.getAbsolutePath())
-				.replace("%MEMORY", Integer.toString(getDBMemory()))
-				.replace("%IP", getDBHost())
-				.replace("%PORT", Integer.toString(getDBPort()));
+		refreshStartupCommand();
 	}
 
 	public void start() {
@@ -135,6 +131,18 @@ public class Server {
 		} catch (Exception e) {
 			return true;
 		}
+	}
+
+	public long getUptime() {
+		return System.currentTimeMillis() - starttime;
+	}
+
+	public void refreshStartupCommand() {
+		startupCommand = getDBStartupCommand()
+				.replace("%JARPATH", jarFile.getAbsolutePath())
+				.replace("%MEMORY", Integer.toString(getDBMemory()))
+				.replace("%IP", getDBHost())
+				.replace("%PORT", Integer.toString(getDBPort()));
 	}
 
 	public InputStream getInputStream() {
