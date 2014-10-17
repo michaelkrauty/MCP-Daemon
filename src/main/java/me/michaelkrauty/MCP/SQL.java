@@ -12,6 +12,9 @@ public class SQL {
 
 	private static Connection connection;
 
+	/**
+	 * Initializes a new SQL class, checks tables in database
+	 */
 	public SQL() {
 		checkTables();
 	}
@@ -24,6 +27,9 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Closes the connection to the database
+	 */
 	public static void closeConnection() {
 		try {
 			connection.close();
@@ -32,6 +38,10 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Verifies that necessary tables exist in the database
+	 * @return success/failure
+	 */
 	public static boolean checkTables() {
 		openConnection();
 		boolean res = true;
@@ -52,6 +62,11 @@ public class SQL {
 		return res;
 	}
 
+	/**
+	 * Verifies that the specified server exists in the database
+	 * @param serverid The ID of the server in question
+	 * @return server existance in the database
+	 */
 	public static boolean serverDataContainsServer(int serverid) {
 		try {
 			openConnection();
@@ -63,6 +78,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the specified server's host
+	 * @param serverid The ID of the server in question
+	 * @return the server's IP
+	 */
 	public static String getServerHost(int serverid) {
 		try {
 			openConnection();
@@ -78,6 +98,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the specified server's port
+	 * @param serverid The ID of the server in question
+	 * @return the server's port
+	 */
 	public static int getServerPort(int serverid) {
 		try {
 			openConnection();
@@ -93,6 +118,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the specified server's allowed memory in MB
+	 * @param serverid The ID of the server in question
+	 * @return the server's allowed memory in MB
+	 */
 	public static int getServerMemory(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -112,6 +142,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the specified server's jar ID
+	 * @param serverid The ID of the server in question
+	 * @return the ID of the server's jar
+	 */
 	public static int getServerJarId(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -131,6 +166,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the specified server's jar name
+	 * @param serverid The ID of the server in question
+	 * @return the name of the server's jar
+	 */
 	public static String getServerJarName(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -150,6 +190,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the suspend status of the specified server
+	 * @param serverid The ID of the server in question
+	 * @return true if the server is suspended, else return false
+	 */
 	public static boolean getServerSuspended(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -169,6 +214,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the specified server's name
+	 * @param serverid The ID of the server in question
+	 * @return the server's name
+	 */
 	public static String getServerName(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -188,6 +238,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the crash detection status of the specified server
+	 * @param serverid The ID of the server in question
+	 * @return true if crash detection is enabled, else return false
+	 */
 	public static boolean getServerCrashDetection(int serverid) {
 		try {
 			if (serverDataContainsServer(serverid)) {
@@ -207,6 +262,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the startup command of the specified jar
+	 * @param jarid The ID of the jar in question
+	 * @return the startup command for the specified jar
+	 */
 	public static String getJarStarupCommand(int jarid) {
 		try {
 			openConnection();
@@ -222,6 +282,11 @@ public class SQL {
 		}
 	}
 
+	/**
+	 * Gets the ID of the specified jar
+	 * @param jar The name of the jar in question
+	 * @return the ID of the specified jar
+	 */
 	public static int getJarID(String jar) {
 		try {
 			openConnection();
