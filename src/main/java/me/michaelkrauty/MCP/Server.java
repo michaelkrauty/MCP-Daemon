@@ -4,6 +4,7 @@ import javax.net.SocketFactory;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Created by michael on 10/13/14.
@@ -25,6 +26,7 @@ public class Server {
 	private String jar;
 	private int jarid;
 	private File jarFile;
+	private ArrayList<String> latestOutput;
 
 	public Server(int id) {
 		this.id = id;
@@ -40,6 +42,7 @@ public class Server {
 		jarFile = new File(Main.jardir, jar);
 		serverdir = new File(Main.serverdir, Integer.toString(id));
 		refreshStartupCommand();
+		latestOutput = new ArrayList<String>();
 	}
 
 	public void start() {
@@ -135,6 +138,26 @@ public class Server {
 
 	public InputStream getInputStream() {
 		return inputstream;
+	}
+
+	public ArrayList<String> getLatestOutput() {
+		return latestOutput;
+	}
+
+	public void addToLatestOutput(String line) {
+		if (latestOutput.size() < 100) {
+			latestOutput.add(line);
+		} else {
+			ArrayList<String> temp = new ArrayList<String>();
+			for (int i = 0; i < latestOutput.size(); i++) {
+				if (i != latestOutput.size())
+					temp.add(latestOutput.get(i + 1));
+				else
+					temp.add(line);
+			}
+			latestOutput.clear();
+			latestOutput = temp;
+		}
 	}
 
 	public int getID() {
