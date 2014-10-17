@@ -91,6 +91,8 @@ class ClientConnection implements Runnable {
 				return gson.toJson(true);
 			} else if (action.equalsIgnoreCase("GetUptime")) {
 				return gson.toJson(server.getUptime());
+			} else if (action.equalsIgnoreCase("GetLatestOutput")) {
+				return gson.toJson(server.getLatestOutput());
 			} else if (action.equalsIgnoreCase("GetServerStatus")) {
 				if (server == null)
 					return gson.toJson("offline");
