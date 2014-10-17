@@ -34,7 +34,8 @@ class ClientConnection implements Runnable {
 			PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
 			String input = in.readLine();
 
-			out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
+			// For debug
+			// out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
 
 			if (input == null) {
 				output.write(new Gson().toJson(false));

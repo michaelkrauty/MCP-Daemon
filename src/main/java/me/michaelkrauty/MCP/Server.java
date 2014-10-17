@@ -74,6 +74,18 @@ public class Server {
 				outputstream = p.getOutputStream();
 				starttime = System.currentTimeMillis();
 				new ServerOutput(inputstream, id);
+				new Thread(new Runnable() {
+					public void run() {
+						while (isRunning()) {
+							try {
+								Thread.sleep(1);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						latestOutput.clear();
+					}
+				}).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -145,12 +157,12 @@ public class Server {
 	}
 
 	public void addToLatestOutput(String line) {
-		if (latestOutput.size() < 100) {
+		if (latestOutput.size() <= 100)
 			latestOutput.add(line);
-		} else {
+		else {
 			ArrayList<String> temp = new ArrayList<String>();
 			for (int i = 0; i < latestOutput.size(); i++) {
-				if (i != latestOutput.size()-1)
+				if (i != latestOutput.size() - 1)
 					temp.add(latestOutput.get(i + 1));
 				else
 					temp.add(line);
