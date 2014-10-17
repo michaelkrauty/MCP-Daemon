@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.michaelkrauty.MCP.Main;
+import me.michaelkrauty.MCP.Server;
 
 import java.io.*;
 import java.net.Socket;
@@ -64,7 +65,7 @@ class ClientConnection implements Runnable {
 				} else
 					output.print(handleInput(action, command, serverid));
 			} else {
-				output.print("Incorrect pass");
+				output.print(false);
 			}
 			output.close();
 			in.close();
@@ -78,6 +79,7 @@ class ClientConnection implements Runnable {
 	private String handleInput(String action, String command, int serverid) {
 		Gson gson = new Gson();
 		if (serverid > 0) {
+			Server server = Main.serverManager.getServer(serverid);
 			if (action.equalsIgnoreCase("Start")) {
 				Main.serverManager.startServer(serverid);
 				return gson.toJson(true);
@@ -85,13 +87,22 @@ class ClientConnection implements Runnable {
 				Main.serverManager.stopServer(serverid);
 				return gson.toJson(true);
 			} else if (action.equalsIgnoreCase("Kill")) {
-				Main.serverManager.getServer(serverid).forceStop();
+				server.forceStop();
 				return gson.toJson(true);
 			} else if (action.equalsIgnoreCase("GetUptime")) {
-				return gson.toJson(Main.serverManager.getServer(serverid).getUptime());
+				return gson.toJson(server.getUptime());
+			} else if (action.equalsIgnoreCase("GetServerStatus")) {
+				if (server == null)
+					return gson.toJson("offline");
+				if (server.isOnline())
+					return gson.toJson("online");
+				else if (server.isRunning())
+					return gson.toJson("running");
+				else
+					return gson.toJson("offline");
 			} else if (action.equalsIgnoreCase("Command")) {
 				if (!command.isEmpty())
-					return gson.toJson(Main.serverManager.getServer(serverid).executeCommand(command));
+					return gson.toJson(server.executeCommand(command));
 			} else if (action.equalsIgnoreCase("CreateServer")) {
 				if (!command.isEmpty())
 					return gson.toJson(Main.serverManager.createServer(serverid, command));
@@ -100,6 +111,6 @@ class ClientConnection implements Runnable {
 		if (action.equalsIgnoreCase("ListOnlineServers")) {
 			return gson.toJson(Main.serverManager.listOnlineServers());
 		}
-		return gson.toJson("Error");
+		return gson.toJson(false);
 	}
 }

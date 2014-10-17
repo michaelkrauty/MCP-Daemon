@@ -98,25 +98,12 @@ public class Server {
 
 	public boolean isOnline() {
 		boolean open = true;
-		// TODO
-		//if (exists()) {
-		if (true) {
-			Socket socket;
-			try {
-				socket = SocketFactory.getDefault().createSocket();
-				try {
-					socket.setSoTimeout(5000);
-					socket.connect(new InetSocketAddress(host, port));
-					socket.close();
-				} catch (Exception e) {
-					open = false;
-				}
-			} catch (Exception e) {
-				out.println("Error creating socket");
-				open = false;
-			}
-		} else {
-			out.println("Server doesn't exist!");
+		Socket socket;
+		try {
+			socket = SocketFactory.getDefault().createSocket();
+			socket.connect(new InetSocketAddress(host, port), 5000);
+			socket.close();
+		} catch (Exception e) {
 			open = false;
 		}
 		return open;
