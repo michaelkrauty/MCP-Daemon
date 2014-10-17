@@ -33,6 +33,7 @@ public class ServerOutput implements Runnable {
 				Main.serverManager.getServer(serverid).addToLatestOutput(line);
 			}
 		} catch (Exception ignored) {
+			// Ignored, only throws error when server is killed
 		}
 	}
 }
