@@ -32,8 +32,7 @@ public class ServerOutput implements Runnable {
 				out.println("Server " + serverid + ": " + line);
 				Main.serverManager.getServer(serverid).addToLatestOutput(line);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ignored) {
 		}
 	}
 }
