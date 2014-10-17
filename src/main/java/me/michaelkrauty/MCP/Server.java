@@ -55,6 +55,7 @@ public class Server {
 				}
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(serverdir);
+				refreshStartupCommand();
 				String[] sc = startupCommand.split(" ");
 				String[] cmd = new String[sc.length + 3];
 				cmd[0] = "sudo";
