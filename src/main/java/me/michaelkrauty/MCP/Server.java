@@ -150,7 +150,7 @@ public class Server {
 		} else {
 			ArrayList<String> temp = new ArrayList<String>();
 			for (int i = 0; i < latestOutput.size(); i++) {
-				if (i != latestOutput.size())
+				if (i != latestOutput.size()-1)
 					temp.add(latestOutput.get(i + 1));
 				else
 					temp.add(line);
