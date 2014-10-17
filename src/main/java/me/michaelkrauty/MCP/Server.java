@@ -97,7 +97,7 @@ public class Server {
 	}
 
 	public void stop() {
-		executeCommand("stop");
+		executeCommand(stopCommand);
 	}
 
 	public void forceStop() {
