@@ -23,6 +23,7 @@ public class Server {
 	private OutputStream outputstream;
 	private long starttime;
 	private String startupCommand;
+	private String stopCommand;
 	private String jar;
 	private int jarid;
 	private File jarFile;
@@ -42,6 +43,7 @@ public class Server {
 		jarFile = new File(Main.jardir, jar);
 		serverdir = new File(Main.serverdir, Integer.toString(id));
 		refreshStartupCommand();
+		stopCommand = getDBStopCommand();
 		latestOutput = new ArrayList<String>();
 	}
 
@@ -199,5 +201,9 @@ public class Server {
 
 	public String getDBStartupCommand() {
 		return Main.sql.getJarStarupCommand(jarid);
+	}
+
+	public String getDBStopCommand() {
+		return Main.sql.getJarStopCommand(jarid);
 	}
 }

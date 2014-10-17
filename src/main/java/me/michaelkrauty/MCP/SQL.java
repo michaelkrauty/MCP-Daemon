@@ -283,6 +283,26 @@ public class SQL {
 	}
 
 	/**
+	 * Gets the stop command of the specified jar
+	 * @param jar The ID of the jar in question
+	 * @return the stop command for the specified jar
+	 */
+	public static String getJarStopCommand(int jar) {
+		try {
+			openConnection();
+			PreparedStatement sql = connection
+					.prepareStatement("SELECT * FROM `jars` WHERE id=?;");
+			sql.setInt(1, jar);
+			ResultSet result = sql.executeQuery();
+			result.next();
+			return result.getString("stop_command");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
 	 * Gets the ID of the specified jar
 	 * @param jar The name of the jar in question
 	 * @return the ID of the specified jar
