@@ -100,6 +100,7 @@ public class Server {
 
 	public void forceStop() {
 		process.destroy();
+		latestOutput.clear();
 	}
 
 	public boolean executeCommand(String command) {
