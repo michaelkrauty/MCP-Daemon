@@ -89,15 +89,12 @@ public class Server {
 		new Thread(new Runnable() {
 			public void run() {
 				while (isRunning()) {
-					try {
-						Thread.sleep(1);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					try {Thread.sleep(1);}catch(Exception e){e.printStackTrace();}
 				}
+				try {Thread.sleep(1000);}catch(Exception e){e.printStackTrace();}
+				start();
 			}
 		}).start();
-		start();
 	}
 
 	public boolean executeCommand(String command) {
