@@ -93,10 +93,11 @@ class ClientConnection implements Runnable {
 					return gson.toJson(true);
 				}
 			} else if (action.equalsIgnoreCase("Restart")) {
-				if (server != null) {
+				if (server != null)
 					server.restart();
-					return gson.toJson(true);
-				}
+				else
+					Main.serverManager.startServer(serverid);
+				return gson.toJson(true);
 			} else if (action.equalsIgnoreCase("Kill")) {
 				if (server != null) {
 					server.forceStop();

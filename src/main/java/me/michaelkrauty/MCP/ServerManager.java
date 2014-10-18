@@ -61,4 +61,20 @@ public class ServerManager {
 		}
 		return online;
 	}
+
+	public void stopAllServers() {
+		for (Server server : servers) {
+			if (server.isRunning())
+				server.stop();
+		}
+	}
+
+	public int getOnlineServerCount() {
+		int running = 0;
+		for (Server server : servers) {
+			if (server.isRunning())
+				running++;
+		}
+		return running;
+	}
 }

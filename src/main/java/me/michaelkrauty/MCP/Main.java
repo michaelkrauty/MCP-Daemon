@@ -39,12 +39,29 @@ public class Main {
 	private static void mainLoop() {
 		try {
 			running = true;
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			while (running) {
-				// Running
+				if (br.ready()) {
+					String command = br.readLine();
+					if (command.equalsIgnoreCase("stop")) {
+						serverManager.stopAllServers();
+						running = false;
+					}
+				}
 				Thread.sleep(100);
 			}
+			out.println("Waiting for servers to shut down...");
+			while (serverManager.getOnlineServerCount() != 0) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			out.println("All servers shut down.");
 			sql.closeConnection();
 			out.println("Program exit.");
+			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
