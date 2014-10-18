@@ -39,15 +39,6 @@ public class ServerManager {
 		}
 	}
 
-	public boolean stopServer(int serverid) {
-		Server server;
-		if ((server = getServer(serverid)) != null) {
-			server.stop();
-			return true;
-		}
-		return false;
-	}
-
 	public boolean createServer(int serverid, String password) {
 		File serverdir = new File(Main.serverdir, Integer.toString(serverid));
 		if (!serverdir.exists()) {

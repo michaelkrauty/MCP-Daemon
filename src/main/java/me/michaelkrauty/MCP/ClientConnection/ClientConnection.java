@@ -79,24 +79,35 @@ class ClientConnection implements Runnable {
 
 	private String handleInput(String action, String command, int serverid) {
 		Gson gson = new Gson();
-		if (serverid > 0) {
+		if (action.equalsIgnoreCase("ListOnlineServers")) {
+			return gson.toJson(Main.serverManager.listOnlineServers());
+		} else if (serverid > 0) {
 			Server server = Main.serverManager.getServer(serverid);
+
 			if (action.equalsIgnoreCase("Start")) {
 				Main.serverManager.startServer(serverid);
 				return gson.toJson(true);
 			} else if (action.equalsIgnoreCase("Stop")) {
-				Main.serverManager.stopServer(serverid);
-				return gson.toJson(true);
+				if (server != null) {
+					server.stop();
+					return gson.toJson(true);
+				}
+			} else if (action.equalsIgnoreCase("Restart")) {
+				if (server != null) {
+					server.restart();
+					return gson.toJson(true);
+				}
 			} else if (action.equalsIgnoreCase("Kill")) {
-				server.forceStop();
-				return gson.toJson(true);
+				if (server != null) {
+					server.forceStop();
+					return gson.toJson(true);
+				}
 			} else if (action.equalsIgnoreCase("GetUptime")) {
-				return gson.toJson(server.getUptime());
+				if (server != null)
+					return gson.toJson(server.getUptime());
 			} else if (action.equalsIgnoreCase("GetLatestOutput")) {
 				if (server != null)
 					return gson.toJson(server.getLatestOutput());
-				else
-					return null;
 			} else if (action.equalsIgnoreCase("GetServerStatus")) {
 				if (server == null)
 					return gson.toJson("offline");
@@ -107,15 +118,14 @@ class ClientConnection implements Runnable {
 				else
 					return gson.toJson("offline");
 			} else if (action.equalsIgnoreCase("Command")) {
-				if (!command.isEmpty())
-					return gson.toJson(server.executeCommand(command));
+				if (server != null) {
+					if (!command.isEmpty())
+						return gson.toJson(server.executeCommand(command));
+				}
 			} else if (action.equalsIgnoreCase("CreateServer")) {
 				if (!command.isEmpty())
 					return gson.toJson(Main.serverManager.createServer(serverid, command));
 			}
-		}
-		if (action.equalsIgnoreCase("ListOnlineServers")) {
-			return gson.toJson(Main.serverManager.listOnlineServers());
 		}
 		return gson.toJson(false);
 	}

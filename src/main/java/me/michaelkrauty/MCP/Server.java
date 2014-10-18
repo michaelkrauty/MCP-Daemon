@@ -15,52 +15,33 @@ public class Server {
 
 	private int id;
 	private File serverdir;
-	private String host;
-	private int port;
-	private int memory;
 	private Process process;
-	private InputStream inputstream;
-	private OutputStream outputstream;
 	private long starttime;
-	private String startupCommand;
-	private String stopCommand;
-	private String jar;
-	private int jarid;
 	private File jarFile;
 	private ArrayList<String> latestOutput;
+	private long latestOutputTime;
+	private String stopCommand;
 
 	public Server(int id) {
 		this.id = id;
-		host = getDBHost();
-		port = getDBPort();
-		memory = getDBMemory();
 		process = null;
-		inputstream = null;
-		outputstream = null;
 		starttime = -1;
-		jar = getDBJarName();
-		jarid = getDBJarID();
-		jarFile = new File(Main.jardir, jar);
+		jarFile = new File(Main.jardir, getJarName());
 		serverdir = new File(Main.serverdir, Integer.toString(id));
-		refreshStartupCommand();
-		stopCommand = getDBStopCommand();
 		latestOutput = new ArrayList<String>();
 	}
 
 	public void start() {
+		String startupCommand = getStartupCommand();
+		stopCommand = getDBStopCommand();
 		out.println("Starting server " + id + " (startup command: " + startupCommand + ")");
 		if (!isRunning()) {
 			try {
 				if (!serverdir.exists()) {
-					Process asdf = Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "mkdir", serverdir.getAbsolutePath()});
-					String line;
-					while ((line = new BufferedReader(new InputStreamReader(asdf.getInputStream())).readLine()) != null) {
-						out.println(line);
-					}
+					Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "mkdir", serverdir.getAbsolutePath()});
 				}
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(serverdir);
-				refreshStartupCommand();
 				String[] sc = startupCommand.split(" ");
 				String[] cmd = new String[sc.length + 3];
 				cmd[0] = "sudo";
@@ -70,12 +51,10 @@ public class Server {
 					cmd[i + 3] = sc[i];
 				}
 				pb.command(cmd);
-				Process p = pb.start();
-				process = p;
-				inputstream = p.getInputStream();
-				outputstream = p.getOutputStream();
+				process = pb.start();
 				starttime = System.currentTimeMillis();
-				new ServerOutput(inputstream, id);
+				new ServerOutput(process.getInputStream(), id);
+				new CrashDetector(this);
 				new Thread(new Runnable() {
 					public void run() {
 						while (isRunning()) {
@@ -105,26 +84,39 @@ public class Server {
 		latestOutput.clear();
 	}
 
+	public void restart() {
+		stop();
+		new Thread(new Runnable() {
+			public void run() {
+				while (isRunning()) {
+					try {
+						Thread.sleep(1);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		start();
+	}
+
 	public boolean executeCommand(String command) {
 		if (isRunning()) {
-			PrintWriter out = new PrintWriter(process.getOutputStream(), true);
-			out.println(command);
+			new PrintWriter(process.getOutputStream(), true).println(command);
 			return true;
 		}
 		return false;
 	}
 
 	public boolean isOnline() {
-		boolean open = true;
-		Socket socket;
 		try {
-			socket = SocketFactory.getDefault().createSocket();
-			socket.connect(new InetSocketAddress(host, port), 5000);
+			Socket socket = SocketFactory.getDefault().createSocket();
+			socket.connect(new InetSocketAddress(getHost(), getPort()), 5000);
 			socket.close();
+			return true;
 		} catch (Exception e) {
-			open = false;
+			return false;
 		}
-		return open;
 	}
 
 	public boolean isRunning() {
@@ -143,16 +135,18 @@ public class Server {
 		return System.currentTimeMillis() - starttime;
 	}
 
-	public void refreshStartupCommand() {
-		startupCommand = getDBStartupCommand()
+	public String getStartupCommand() {
+		return Main.sql.getJarStarupCommand(getJarID())
 				.replace("%JARPATH", jarFile.getAbsolutePath())
-				.replace("%MEMORY", Integer.toString(getDBMemory()))
-				.replace("%IP", getDBHost())
-				.replace("%PORT", Integer.toString(getDBPort()));
+				.replace("%MEMORY", Integer.toString(getMemory()))
+				.replace("%IP", getHost())
+				.replace("%PORT", Integer.toString(getPort()));
 	}
 
 	public InputStream getInputStream() {
-		return inputstream;
+		if (process != null)
+			return process.getInputStream();
+		return null;
 	}
 
 	public ArrayList<String> getLatestOutput() {
@@ -160,6 +154,7 @@ public class Server {
 	}
 
 	public void addToLatestOutput(String line) {
+		latestOutputTime = System.currentTimeMillis();
 		if (latestOutput.size() <= 100)
 			latestOutput.add(line);
 		else {
@@ -175,35 +170,35 @@ public class Server {
 		}
 	}
 
+	public long getLatestOutputTime() {
+		return latestOutputTime;
+	}
+
+	private String getJarName() {
+		return Main.sql.getServerJarName(id);
+	}
+
 	public int getID() {
 		return id;
 	}
 
-	public String getDBHost() {
+	public String getHost() {
 		return Main.sql.getServerHost(id);
 	}
 
-	public int getDBPort() {
+	public int getPort() {
 		return Main.sql.getServerPort(id);
 	}
 
-	public int getDBMemory() {
+	public int getMemory() {
 		return Main.sql.getServerMemory(id);
 	}
 
-	public String getDBJarName() {
-		return Main.sql.getServerJarName(id);
-	}
-
-	public int getDBJarID() {
-		return Main.sql.getJarID(jar);
-	}
-
-	public String getDBStartupCommand() {
-		return Main.sql.getJarStarupCommand(jarid);
+	public int getJarID() {
+		return Main.sql.getJarID(getJarName());
 	}
 
 	public String getDBStopCommand() {
-		return Main.sql.getJarStopCommand(jarid);
+		return Main.sql.getJarStopCommand(getJarID());
 	}
 }
