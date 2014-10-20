@@ -4,6 +4,7 @@ import me.michaelkrauty.MCP.ClientConnection.ConnectionHandler;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.UUID;
 
 /**
@@ -59,7 +60,9 @@ public class Main {
 				}
 			}
 			out.println("All servers shut down.");
+			out.println("Closing SQL connection...");
 			sql.closeConnection();
+			out.println("Connection to SQL database closed.");
 			out.println("Program exit.");
 			System.exit(0);
 		} catch (Exception e) {

@@ -42,12 +42,10 @@ public class CrashDetector implements Runnable {
 						strike++;
 						server.executeCommand("list");
 					}
-					if (strike == 1) {
+					if (strike == 1)
 						strike++;
-					}
-					if (strike == 0) {
+					if (strike == 0)
 						strike++;
-					}
 				} else {
 					strike = 0;
 					lastCycle = server.getLatestOutputTime();

@@ -53,7 +53,7 @@ public class Server {
 				pb.command(cmd);
 				process = pb.start();
 				starttime = System.currentTimeMillis();
-				new ServerOutput(process.getInputStream(), id);
+				// new ServerOutput(process.getInputStream(), id);
 				new CrashDetector(this);
 				new Thread(new Runnable() {
 					public void run() {
@@ -65,6 +65,20 @@ public class Server {
 							}
 						}
 						latestOutput.clear();
+					}
+				}).start();
+				new Thread(new Runnable() {
+					public void run() {
+						BufferedReader br = new BufferedReader(new InputStreamReader(getInputStream()));
+						String line;
+						try {
+							while ((line = br.readLine()) != null) {
+								System.out.println("Server " + id + ": " + line);
+								addToLatestOutput(line);
+							}
+						} catch (Exception ignored) {
+							// Ignored, only throws error when server is killed
+						}
 					}
 				}).start();
 			} catch (Exception e) {
@@ -89,9 +103,17 @@ public class Server {
 		new Thread(new Runnable() {
 			public void run() {
 				while (isRunning()) {
-					try {Thread.sleep(1);}catch(Exception e){e.printStackTrace();}
+					try {
+						Thread.sleep(1);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-				try {Thread.sleep(1000);}catch(Exception e){e.printStackTrace();}
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				start();
 			}
 		}).start();
