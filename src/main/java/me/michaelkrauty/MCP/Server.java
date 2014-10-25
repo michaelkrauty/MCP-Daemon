@@ -64,7 +64,7 @@ public class Server {
 								e.printStackTrace();
 							}
 						}
-						latestOutput.clear();
+						latestOutput.add("Server shut down.");
 					}
 				}).start();
 				new Thread(new Runnable() {
@@ -95,7 +95,6 @@ public class Server {
 
 	public void forceStop() {
 		process.destroy();
-		latestOutput.clear();
 	}
 
 	public void restart() {
