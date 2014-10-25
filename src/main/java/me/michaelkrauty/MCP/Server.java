@@ -53,7 +53,6 @@ public class Server {
 				pb.command(cmd);
 				process = pb.start();
 				starttime = System.currentTimeMillis();
-				// new ServerOutput(process.getInputStream(), id);
 				new CrashDetector(this);
 				new Thread(new Runnable() {
 					public void run() {
