@@ -124,6 +124,9 @@ class ClientConnection implements Runnable {
 			} else if (action.equalsIgnoreCase("getMaxPlayers")) {
 				if (server != null)
 					return gson.toJson(server.getMaxPlayers());
+			} else if (action.equalsIgnoreCase("getMOTD")) {
+				if (server != null)
+					return gson.toJson(server.getMOTD());
 			} else if (action.equalsIgnoreCase("Command")) {
 				if (server != null) {
 					if (!command.isEmpty())

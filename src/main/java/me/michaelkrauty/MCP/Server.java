@@ -209,11 +209,17 @@ public class Server {
 	}
 
 	public int getOnlinePlayers() {
-		return Integer.parseInt(getDynamicServerInfo("onlinePlayers"));
+		String onlinePlayers = getDynamicServerInfo("onlinePlayers");
+		if (onlinePlayers != null)
+			return Integer.parseInt(onlinePlayers);
+		return 0;
 	}
 
 	public int getMaxPlayers() {
-		return Integer.parseInt(getDynamicServerInfo("maxPlayers"));
+		String maxPlayers = getDynamicServerInfo("maxPlayers");
+		if (maxPlayers != null)
+			return Integer.parseInt(maxPlayers);
+		return 0;
 	}
 
 	public String getMOTD() {
