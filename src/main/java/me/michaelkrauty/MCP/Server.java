@@ -33,12 +33,18 @@ public class Server {
 		latestOutput = new ArrayList<String>();
 	}
 
+	public void refreshInfo() {
+		originalJar = new File(Main.jardir, getJarName());
+		jarFile = new File(serverdir, getJarName());
+	}
+
 	public void start() {
 		String startupCommand = getStartupCommand();
 		stopCommand = getDBStopCommand();
 		out.println("Starting server " + id + " (startup command: " + startupCommand + ")");
 		if (!isRunning()) {
 			try {
+				refreshInfo();
 				if (!serverdir.exists()) {
 					Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "mkdir", serverdir.getAbsolutePath()});
 				}
