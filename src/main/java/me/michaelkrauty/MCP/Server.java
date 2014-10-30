@@ -17,6 +17,7 @@ public class Server {
 	private File serverdir;
 	private Process process;
 	private long starttime;
+	private File originalJar;
 	private File jarFile;
 	private ArrayList<String> latestOutput;
 	private long latestOutputTime;
@@ -26,8 +27,9 @@ public class Server {
 		this.id = id;
 		process = null;
 		starttime = -1;
-		jarFile = new File(Main.jardir, getJarName());
+		originalJar = new File(Main.jardir, getJarName());
 		serverdir = new File(Main.serverdir, Integer.toString(id));
+		jarFile = new File(serverdir, getJarName());
 		latestOutput = new ArrayList<String>();
 	}
 
@@ -39,6 +41,14 @@ public class Server {
 			try {
 				if (!serverdir.exists()) {
 					Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "mkdir", serverdir.getAbsolutePath()});
+				}
+				if (!jarFile.exists()) {
+					Process p = Runtime.getRuntime().exec(new String[]{"sudo", "-u", "s" + id, "cp", originalJar.getAbsolutePath(), jarFile.getAbsolutePath()});
+					BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+					String line;
+					while ((line = br.readLine()) != null) {
+						out.println(line);
+					}
 				}
 				ProcessBuilder pb = new ProcessBuilder();
 				pb.directory(serverdir);
