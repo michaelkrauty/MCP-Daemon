@@ -176,7 +176,7 @@ public class Server {
 		return null;
 	}
 
-	public int getOnlinePlayers() {
+	private String getDynamicServerInfo(String info) {
 		try {
 			Socket sock = new Socket(getHost(), getPort());
 
@@ -190,17 +190,35 @@ public class Server {
 			while ((b = in.read()) != -1) {
 				if (b != 0 && b > 16 && b != 255 && b != 23 && b != 24) {
 					str.append((char) b);
-					System.out.println(b + ":" + ((char) b));
 				}
 			}
 
 			String[] data = str.toString().split("§");
-			return Integer.parseInt(data[1]);
+			if (info.equalsIgnoreCase("onlinePlayers"))
+				return data[1];
+			else if (info.equalsIgnoreCase("maxPlayers"))
+				return data[2];
+			else if (info.equalsIgnoreCase("motd"))
+				return data[3];
+			else
+				return null;
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
-		return 0;
+	}
+
+	public int getOnlinePlayers() {
+		return Integer.parseInt(getDynamicServerInfo("onlinePlayers"));
+	}
+
+	public int getMaxPlayers() {
+		return Integer.parseInt(getDynamicServerInfo("maxPlayers"));
+	}
+
+	public String getMOTD() {
+		return getDynamicServerInfo("motd");
 	}
 
 	public ArrayList<String> getLatestOutput() {
