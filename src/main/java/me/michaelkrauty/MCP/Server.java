@@ -176,6 +176,33 @@ public class Server {
 		return null;
 	}
 
+	public int getOnlinePlayers() {
+		try {
+			Socket sock = new Socket(getHost(), getPort());
+
+			DataOutputStream out = new DataOutputStream(sock.getOutputStream());
+			DataInputStream in = new DataInputStream(sock.getInputStream());
+
+			out.write(0xFE);
+
+			int b;
+			StringBuffer str = new StringBuffer();
+			while ((b = in.read()) != -1) {
+				if (b != 0 && b > 16 && b != 255 && b != 23 && b != 24) {
+					str.append((char) b);
+					System.out.println(b + ":" + ((char) b));
+				}
+			}
+
+			String[] data = str.toString().split("§");
+			return Integer.parseInt(data[1]);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	public ArrayList<String> getLatestOutput() {
 		return latestOutput;
 	}
