@@ -70,7 +70,7 @@ public class SQL {
             PreparedStatement sql = connection.prepareStatement("SELECT * FROM daemons WHERE id=?;");
             sql.setInt(1, Main.daemonID);
             ResultSet result = sql.executeQuery();
-            if (result.next()) {
+            if (!result.next()) {
                 sql = connection.prepareStatement("INSERT INTO daemons ('id', 'ip', 'port', 'memory') VALUES (?,?,?,?);");
                 sql.setInt(1, Main.daemonID);
                 sql.setString(2, Main.daemonIP);
