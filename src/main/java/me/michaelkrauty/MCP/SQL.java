@@ -60,8 +60,7 @@ public class SQL {
             e.printStackTrace();
             res = false;
         }
-        if (res)
-            verifyOwnExistanceInDatabase();
+        verifyOwnExistanceInDatabase();
         return res;
     }
 
