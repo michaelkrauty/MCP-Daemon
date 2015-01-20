@@ -72,7 +72,7 @@ public class SQL {
             ResultSet result = sql.executeQuery();
             if (!result.next()) {
                 out.println("Daemon " + Main.daemonID + " not found. Inserting into SQL database...");
-                sql = connection.prepareStatement("INSERT INTO daemons (`id`, `ip`, `port`, `memory`) VALUES (?,?,?,?);");
+                sql = connection.prepareStatement("INSERT INTO daemons (`id`, `host`, `port`, `memory`) VALUES (?,?,?,?);");
                 sql.setInt(1, Main.daemonID);
                 sql.setString(2, Main.daemonIP);
                 sql.setInt(3, Main.daemonPort);
