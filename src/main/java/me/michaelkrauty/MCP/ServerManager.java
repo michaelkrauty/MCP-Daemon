@@ -11,10 +11,6 @@ public class ServerManager {
 
     private ArrayList<Server> servers = new ArrayList<Server>();
 
-    public ServerManager() {
-
-    }
-
     public ArrayList<Server> getServers() {
         return servers;
     }
