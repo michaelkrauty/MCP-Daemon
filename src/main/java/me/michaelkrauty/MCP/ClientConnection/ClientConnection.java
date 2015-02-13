@@ -34,7 +34,7 @@ class ClientConnection implements Runnable {
             String input = in.readLine();
 
             // For debug
-            // out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
+            out.println(socket.getRemoteSocketAddress().toString() + ": " + input);
 
             if (input == null) {
                 output.write(new Gson().toJson(false));
@@ -80,9 +80,10 @@ class ClientConnection implements Runnable {
         Gson gson = new Gson();
         if (action.equalsIgnoreCase("ListOnlineServers")) {
             return gson.toJson(Main.serverManager.listOnlineServers());
+        } else if (action.equalsIgnoreCase("check")) {
+            return gson.toJson(true);
         } else if (serverid > 0) {
             Server server = Main.serverManager.getServer(serverid);
-
             if (action.equalsIgnoreCase("Start")) {
                 Main.serverManager.startServer(serverid);
                 return gson.toJson(true);
