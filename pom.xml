@@ -55,6 +55,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>MCP</finalName>
     </build>
 
 </project>

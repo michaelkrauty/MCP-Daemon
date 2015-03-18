@@ -78,7 +78,7 @@ public class SQL {
                 sql.setInt(3, Main.daemonPort);
                 sql.setInt(4, Main.daemonMemory);
                 sql.execute();
-                out.println("Inserted into SQL database.");
+                out.println("Inserted into SQL database. Please manually copy the daemon pass into the SQL entry.");
             }
         } catch (Exception e) {
             e.printStackTrace();
